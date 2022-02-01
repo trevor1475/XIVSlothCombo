@@ -40,7 +40,8 @@ namespace XIVSlothComboPlugin.Combos
             EnAvant = 16010,
             Flourish = 16013,
             Improvisation = 16014,
-            Devilment = 16011;
+            Devilment = 16011,
+            Peloton = 7557;
 
         public static class Buffs
         {
@@ -57,7 +58,8 @@ namespace XIVSlothComboPlugin.Combos
                 FlourishingStarfall = 2700,
                 FlourishingFinish = 2698,
                 ThreeFoldFanDance = 1820,
-                FourFoldFanDance = 2699;
+                FourFoldFanDance = 2699,
+                Peloton = 1199;
         }
 
         public static class Debuffs
@@ -68,9 +70,29 @@ namespace XIVSlothComboPlugin.Combos
         public static class Levels
         {
             public const byte
+                Cascade = 1,
                 Fountain = 2,
+                StandardStep = 15,
+                ReverseCascade = 20,
+                Bladeshower = 25,
+                FanDance = 30,
+                FourfoldFantasy = 30,
+                RisingWindmill = 35,
+                Fountainfall = 40,
+                Bloodshower = 45,
+                FanDance2 = 50,
+                EnAvant = 50,
+                CuringWaltz = 52,
+                ShieldSamba = 56,
+                ClosedPosition = 60,
+                Devilment = 62,
+                FanDance3 = 66,
+                TechnicalStep = 70,
+                Flourish = 72,
                 SaberDance = 76,
-                Bladeshower = 25;
+                Improvisation = 80,
+                FanDance4 = 86,
+                StarfallDance = 90;
         }
     }
 
@@ -361,6 +383,164 @@ namespace XIVSlothComboPlugin.Combos
                 var gauge = GetJobGauge<DNCGauge>();
                 if (gauge.Feathers == 0 && gauge.Esprit >= 50)
                     return DNC.SaberDance;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class DancerSimpleFeature : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DancerSimpleFeature;
+
+        internal bool inOpener = false;
+        internal bool openerFinished = false;
+        internal byte step = 0;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == DNC.Cascade) {
+                var inCombat = HasCondition(Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat);
+
+                if (IsEnabled(CustomComboPreset.DancerSimpleOpener) && level >= 90)
+                {
+                    if (inCombat && HasEffect(DNC.Buffs.StandardStep) && !inOpener)
+                    {
+                        inOpener = true;
+                    }
+
+                    if (!inCombat && (inOpener || openerFinished))
+                    {
+                        inOpener = false;
+                        openerFinished = false;
+                        step = 0;
+
+                        return DNC.StandardStep;
+                    }
+
+                    if (inCombat && inOpener && !openerFinished)
+                    {
+                        var gauge = GetJobGauge<DNCGauge>();
+                        // StandardStep (Done first)
+                        // Step #1
+                        if (step == 0) {
+                            if (gauge.CompletedSteps == 1) step++;
+                            else return (uint)gauge.NextStep;
+                        }
+                        // Step #2
+                        if (step == 1) {
+                            if (gauge.CompletedSteps == 2) step++;
+                            else return (uint)gauge.NextStep;
+                        }
+                        // Peloton
+                        if (step == 2) {
+                            if (HasEffect(DNC.Buffs.Peloton)) step++;
+                            else return DNC.Peloton;
+                        }
+                        // Standard Finish
+                        if (step == 3) {
+                            if (!gauge.IsDancing) step++;
+                            else return DNC.StandardFinish2;
+                        }
+                        // Technical Step
+                        if (step == 4) {
+                            if (HasEffect(DNC.Buffs.TechnicalStep)) step++;
+                            else return DNC.TechnicalStep;
+                        }
+                        // Step #1
+                        // Step #2
+                        // Step #3
+                        // Step #4
+                        // Technical Finish
+                        // [Weave] Devilment
+                        // Starfall Dance
+                        // [Weave] Flourish
+                        // [Weave] Dan Dance 3
+                        // Tillana
+                        // [Weave] Fan Dance 4
+                        // Saber Dance OR Fountainfall
+                        // (feather?) [Weave] Fan Dance 1
+                        // (proc?) [Weave] Fan Dance 3
+                        // Standard Step
+                        // Step #1
+                        // Step #2
+                        // Standard Finish
+                    }
+                }
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class DancerSimpleAoeFeature : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.DancerSimpleAoeFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == DNC.Windmill) {
+                var gauge = GetJobGauge<DNCGauge>();
+                var canWeaveAbilities = (
+                    CanWeave(DNC.Windmill) ||
+                    CanWeave(DNC.Bladeshower) ||
+                    CanWeave(DNC.RisingWindmill) ||
+                    CanWeave(DNC.Bloodshower)
+                );
+
+                if (level >= DNC.Levels.StandardStep && IsEnabled(CustomComboPreset.DancerSimpleAoeStandardFeature))
+                {
+                    if (IsOffCooldown(DNC.StandardStep))
+                        return DNC.StandardStep;
+
+                    if (HasEffect(DNC.Buffs.StandardStep))
+                        return gauge.CompletedSteps < 2
+                            ? (uint)gauge.NextStep
+                            : DNC.StandardFinish2;
+                }
+
+                if (level >= DNC.Levels.TechnicalStep && IsEnabled(CustomComboPreset.DancerSimpleAoeTechnicalFeature)) {
+                    if (IsOffCooldown(DNC.TechnicalStep))
+                        return DNC.TechnicalStep;
+
+                    if (HasEffect(DNC.Buffs.TechnicalStep))
+                        return gauge.CompletedSteps < 4
+                            ? (uint)gauge.NextStep
+                            : DNC.TechnicalFinish4;
+                }
+
+                if (IsEnabled(CustomComboPreset.DancerSimpleAoeBuffsFeature))
+                {
+                    if (level >= DNC.Levels.Devilment && IsOffCooldown(DNC.Devilment) && canWeaveAbilities)
+                    {
+                        return DNC.Devilment;
+                    }
+
+                    if (level >= DNC.Levels.Flourish && IsOffCooldown(DNC.Flourish) && canWeaveAbilities)
+                    {
+                        return DNC.Flourish;
+                    }
+                }
+                
+                if (level >= DNC.Levels.SaberDance && gauge.Esprit >= 50 && IsOffCooldown(DNC.SaberDance))
+                {
+                    return DNC.SaberDance;
+                }
+
+                if (level >= DNC.Levels.FanDance2 && IsEnabled(CustomComboPreset.DancerSimpleAoeFeatherFeature) && canWeaveAbilities)
+                {
+                    if (HasEffect(DNC.Buffs.ThreeFoldFanDance)) return DNC.FanDance3;
+
+                    var minFeathers = IsEnabled(CustomComboPreset.DancerSimpleAoeFeatherPoolingFeature) ? 3 : 0;
+
+                    if (gauge.Feathers > minFeathers) return DNC.FanDance2;
+                }
+
+                if (level >= DNC.Levels.Bloodshower && HasEffect(DNC.Buffs.FlourishingFlow)) return DNC.Bloodshower;
+                if (level >= DNC.Levels.RisingWindmill && HasEffect(DNC.Buffs.FlourishingSymetry)) return DNC.RisingWindmill;
+                if (level >= DNC.Levels.Bladeshower && lastComboMove == DNC.Windmill) return DNC.Bladeshower;
+            
+                return DNC.Windmill;
             }
 
             return actionID;

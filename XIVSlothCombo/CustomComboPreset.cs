@@ -377,6 +377,36 @@ namespace XIVSlothComboPlugin
         [CustomComboInfo("Flourish On Combined Dance Feature", "Adds Flourish to the CombinedStepCombo.", DNC.JobID)]
         DancerFlourishOnCombinedDanceFeature = 4014,
 
+        [CustomComboInfo("Simple Dancer", "DO NOT USE YET - Single button single target dancer, including songs, flourishes and overprotections.\nConflicts with all other non-simple toggles!!", DNC.JobID)]
+        DancerSimpleFeature = 4015,
+
+        [ParentCombo(DancerSimpleFeature)]
+        [CustomComboInfo("Simple Opener", "Optimised opener before each fight\nStart at 14 seconds (or 15.5 if using tincture manually)", DNC.JobID)]
+        DancerSimpleOpener = 4016,
+
+        [CustomComboInfo("Simple Dancer AOE", "Single button aoe dancer, including songs, flourishes and overprotections.\nConflicts with all other non-simple toggles!!", DNC.JobID)]
+        DancerSimpleAoeFeature = 4017,
+
+        [ParentCombo(DancerSimpleAoeFeature)]
+        [CustomComboInfo("Simple AOE Standard", "Includes standard step in the simple aoe rotation", DNC.JobID)]
+        DancerSimpleAoeStandardFeature = 4018,
+
+        [ParentCombo(DancerSimpleAoeFeature)]
+        [CustomComboInfo("Simple AOE Technical", "Includes technical step in the simple aoe rotation", DNC.JobID)]
+        DancerSimpleAoeTechnicalFeature = 4019,
+
+        [ParentCombo(DancerSimpleAoeFeature)]
+        [CustomComboInfo("Simple AOE Buffs", "Includes devilment and flourish in the simple aoe rotation", DNC.JobID)]
+        DancerSimpleAoeBuffsFeature = 4020,
+
+        [ParentCombo(DancerSimpleAoeFeature)]
+        [CustomComboInfo("Simple AOE Feathers", "Includes feather usage in the simple aoe rotation", DNC.JobID)]
+        DancerSimpleAoeFeatherFeature = 4021,
+
+        [ParentCombo(DancerSimpleAoeFeature)]
+        [CustomComboInfo("Simple AOE Feather Pooling", "Makes it so the aoe rotation only uses feathers when you have more than 3", DNC.JobID)]
+        DancerSimpleAoeFeatherPoolingFeature = 4022,
+
 
         #endregion
         // ====================================================================================
