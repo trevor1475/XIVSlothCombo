@@ -1,0 +1,761 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XIVSlothCombo</name>
+    </assembly>
+    <members>
+        <member name="T:XIVSlothComboPlugin.Attributes.ConflictingCombosAttribute">
+            <summary>
+            Attribute documenting conflicting presets for each combo.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Attributes.ConflictingCombosAttribute.#ctor(XIVSlothComboPlugin.CustomComboPreset[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.Attributes.ConflictingCombosAttribute"/> class.
+            </summary>
+            <param name="conflictingPresets">Presets that conflict with the given combo.</param>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.ConflictingCombosAttribute.ConflictingPresets">
+            <summary>
+            Gets the display name.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute">
+            <summary>
+            Attribute documenting additional information for each combo.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.#ctor(System.String,System.String,System.Byte,System.Int32,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute"/> class.
+            </summary>
+            <param name="fancyName">Display name.</param>
+            <param name="description">Combo description.</param>
+            <param name="jobID">Associated job ID.</param>
+            <param name="order">Display order.</param>
+            <param name="memeName">Display meme name</param>
+            <param name="memeDescription">Meme description.</param>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.FancyName">
+            <summary>
+            Gets the display name.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.MemeName">
+            <summary>
+             Gets the meme name.
+             </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.Description">
+            <summary>
+            Gets the description.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.MemeDescription">
+            <summary>
+            Gets the meme description.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.JobID">
+            <summary>
+            Gets the job ID.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.Order">
+            <summary>
+            Gets the display order.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.JobName">
+            <summary>
+            Gets the job name.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.CustomComboInfoAttribute.MemeJobName">
+            <summary>
+            Gets the meme job name.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.Attributes.ParentComboAttribute">
+            <summary>
+            Attribute documenting required combo relationships.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Attributes.ParentComboAttribute.#ctor(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.Attributes.ParentComboAttribute"/> class.
+            </summary>
+            <param name="parentPreset">Presets that conflict with the given combo.</param>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Attributes.ParentComboAttribute.ParentPreset">
+            <summary>
+            Gets the display name.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.Attributes.SecretCustomComboAttribute">
+            <summary>
+            Attribute designating secret combos.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.Combos.CustomCombo">
+            <summary>
+            Base class for each combo.
+            </summary>
+            <summary>
+            Passthrough methods and properties to IconReplacer. Shortens what it takes to call each method.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.Combos.CustomCombo"/> class.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Combos.CustomCombo.Preset">
+            <summary>
+            Gets the preset associated with this combo.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Combos.CustomCombo.ClassID">
+            <summary>
+            Gets the class ID associated with this combo.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Combos.CustomCombo.JobID">
+            <summary>
+            Gets the job ID associated with this combo.
+            </summary>
+        </member>
+        <member name="F:XIVSlothComboPlugin.Combos.CustomCombo.restartCombatTimer">
+            <summary>
+            Function that keeps getting called by the timer set up in the constructor,
+            to keep track of combat duration.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.CombatEngageDuration">
+            <summary>
+            Tells the elapsed time since the combat started.
+            </summary>
+            <returns>Combat time in seconds.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.TryInvoke(System.UInt32,System.Byte,System.UInt32,System.Single,System.UInt32@)">
+            <summary>
+            Performs various checks then attempts to invoke the combo.
+            </summary>
+            <param name="actionID">Starting action ID.</param>
+            <param name="level">Player level.</param>
+            <param name="lastComboMove">Last combo action ID.</param>
+            <param name="comboTime">Combo timer.</param>
+            <param name="newActionID">Replacement action ID.</param>
+            <returns>True if the action has changed, otherwise false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.CalcBestAction(System.UInt32,System.UInt32[])">
+            <summary>
+            Calculate the best action to use, based on cooldown remaining.
+            If there is a tie, the original is used.
+            </summary>
+            <param name="original">The original action.</param>
+            <param name="actions">Action data.</param>
+            <returns>The appropriate action to use.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.Invoke(System.UInt32,System.UInt32,System.Single,System.Byte)">
+            <summary>
+            Invokes the combo.
+            </summary>
+            <param name="actionID">Starting action ID.</param>
+            <param name="lastComboActionID">Last combo action.</param>
+            <param name="comboTime">Current combo time.</param>
+            <param name="level">Current player level.</param>
+            <returns>The replacement action ID.</returns>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Combos.CustomCombo.LocalPlayer">
+            <summary>
+            Gets the player or null.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Combos.CustomCombo.CurrentTarget">
+            <summary>
+            Gets the current target or null.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasTarget">
+            <summary>
+            Find if the player has a target.
+            </summary>
+            <returns>A value indicating whether the player has a target.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.OriginalHook(System.UInt32)">
+            <summary>
+            Calls the original hook.
+            </summary>
+            <param name="actionID">Action ID.</param>
+            <returns>The result from the hook.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.IsOriginal(System.UInt32)">
+            <summary>
+            Compare the original hook to the given action ID.
+            </summary>
+            <param name="actionID">Action ID.</param>
+            <returns>A value indicating whether the action would be modified.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.IsEnabled(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Determine if the given preset is enabled.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>A value indicating whether the preset is enabled.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.IsNotEnabled(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Determine if the given preset is not enabled.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>A value indicating whether the preset is not enabled.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasCondition(Dalamud.Game.ClientState.Conditions.ConditionFlag)">
+            <summary>
+            Find if the player has a certain condition.
+            </summary>
+            <param name="flag">Condition flag.</param>
+            <returns>A value indicating whether the player is in the condition.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.InCombat">
+            <summary>
+            Find if the player is in combat.
+            </summary>
+            <returns>A value indicating whether the player is in combat.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasPetPresent">
+            <summary>
+            Find if the player has a pet present.
+            </summary>
+            <returns>A value indicating whether the player has a pet present.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasEffect(System.UInt16)">
+            <summary>
+            Find if an effect on the player exists.
+            The effect may be owned by the player or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>A value indicating if the effect exists.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.FindEffect(System.UInt16)">
+            <summary>
+            Finds an effect on the player.
+            The effect must be owned by the player or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.TargetHasEffect(System.UInt16)">
+            <summary>
+            Find if an effect on the target exists.
+            The effect must be owned by the player or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>A value indicating if the effect exists.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.FindTargetEffect(System.UInt16)">
+            <summary>
+            Finds an effect on the current target.
+            The effect must be owned by the player or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasEffectAny(System.UInt16)">
+            <summary>
+            Find if an effect on the player exists.
+            The effect may be owned by anyone or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>A value indicating if the effect exists.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.FindEffectAny(System.UInt16)">
+            <summary>
+            Finds an effect on the player.
+            The effect may be owned by anyone or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.TargetHasEffectAny(System.UInt16)">
+            <summary>
+            Find if an effect on the target exists.
+            The effect may be owned by anyone or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>A value indicating if the effect exists.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.FindTargetEffectAny(System.UInt16)">
+            <summary>
+            Finds an effect on the current target.
+            The effect may be owned by anyone or unowned.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.FindEffect(System.UInt16,Dalamud.Game.ClientState.Objects.Types.GameObject,System.Nullable{System.UInt32})">
+            <summary>
+            Finds an effect on the given object.
+            </summary>
+            <param name="effectID">Status effect ID.</param>
+            <param name="obj">Object to look for effects on.</param>
+            <param name="sourceID">Source object ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetCooldown(System.UInt32)">
+            <summary>
+            Gets the cooldown data for an action.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Cooldown data.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetCooldownRemainingTime(System.UInt32)">
+            <summary>
+            Gets the cooldown total remaining time.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Total remaining time of the cooldown.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetCooldownChargeRemainingTime(System.UInt32)">
+            <summary>
+            Gets the cooldown remaining time for the next charge.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Remaining time for the next charge of the cooldown.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.IsOnCooldown(System.UInt32)">
+            <summary>
+            Gets a value indicating whether an action is on cooldown.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.IsOffCooldown(System.UInt32)">
+            <summary>
+            Gets a value indicating whether an action is off cooldown.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.JustUsed(System.UInt32)">
+            <summary>
+            Check if the Cooldown was just used.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.HasCharges(System.UInt32)">
+            <summary>
+            Gets a value indicating whether an action has any available charges.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetRemainingCharges(System.UInt32)">
+            <summary>
+            Get the current number of charges remaining for an action.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Number of charges.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetMaxCharges(System.UInt32)">
+            <summary>
+            Get the maximum number of charges for an action.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Number of charges.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.CanWeave(System.UInt32,System.Double)">
+            <summary>
+            Checks if the provided action ID has cooldown remaining enough to weave against it
+            without causing clipping
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <param name="weaveTime">Time when weaving window is over. Defaults to 0.7.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetJobGauge``1">
+            <summary>
+            Get a job gauge.
+            </summary>
+            <typeparam name="T">Type of job gauge.</typeparam>
+            <returns>The job gauge.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.GetTargetDistance">
+            <summary>
+            Gets the distance from the target.
+            </summary>
+            <returns>Double representing the distance from the target.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.InMeleeRange(System.Boolean)">
+            <summary>
+            Gets a value indicating whether you are in melee range from the current target.
+            </summary>
+            <returns>Bool indicating whether you are in melee range.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.InCorpsRange(System.Boolean)">
+            <summary>
+            Gets a value indicating whether you are in melee range from the current target.
+            </summary>
+            <returns>Bool indicating whether you are in melee range.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.Combos.CustomCombo.CanInterruptEnemy">
+            <summary>
+            Determines if the enemy can be interrupted if they are currently casting.
+            </summary>
+            <returns>Bool indicating whether they can be interrupted or not.</returns>
+        </member>
+        <member name="T:XIVSlothComboPlugin.ConfigWindow">
+            <summary>
+            Plugin configuration window.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.ConfigWindow.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.ConfigWindow"/> class.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.ConfigWindow.EnableParentPresets(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Iterates up a preset's parent tree, enabling each of them.
+            </summary>
+            <param name="preset">Combo preset to enabled.</param>
+        </member>
+        <member name="M:XIVSlothComboPlugin.ConfigWindow.DrawUserConfigs(XIVSlothComboPlugin.CustomComboPreset,System.Boolean)">
+            <summary>
+            Draws the User Configurable settings.
+            </summary>
+            <param name="preset">The preset it's attached to</param>
+            <param name="enabled">If it's enabled or not</param>
+        </member>
+        <member name="T:XIVSlothComboPlugin.CooldownData">
+            <summary>
+            Internal cooldown data.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.IsCooldown">
+            <summary>
+            Gets a value indicating whether the action is on cooldown.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.ActionID">
+            <summary>
+            Gets the action ID on cooldown.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.CooldownElapsed">
+            <summary>
+            Gets the elapsed cooldown time.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.CooldownTotal">
+            <summary>
+            Gets the total cooldown time.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.CooldownRemaining">
+            <summary>
+            Gets the cooldown time remaining.
+            </summary>
+            
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.MaxCharges">
+            <summary>
+            Gets the maximum number of charges for an action at the current level.
+            </summary>
+            <returns>Number of charges.</returns>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.HasCharges">
+            <summary>
+            Gets a value indicating whether the action has charges, not charges available.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.RemainingCharges">
+            <summary>
+            Gets the remaining number of charges for an action.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.CooldownData.ChargeCooldownRemaining">
+            <summary>
+            Gets the cooldown time remaining until the next charge.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.CustomComboCache">
+            <summary>
+            Cached conditional combo logic.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.CustomComboCache"/> class.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.GetJobGauge``1">
+            <summary>
+            Get a job gauge.
+            </summary>
+            <typeparam name="T">Type of job gauge.</typeparam>
+            <returns>The job gauge.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.GetStatus(System.UInt32,Dalamud.Game.ClientState.Objects.Types.GameObject,System.Nullable{System.UInt32})">
+            <summary>
+            Finds a status on the given object.
+            </summary>
+            <param name="statusID">Status effect ID.</param>
+            <param name="obj">Object to look for effects on.</param>
+            <param name="sourceID">Source object ID.</param>
+            <returns>Status object or null.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.GetCooldown(System.UInt32)">
+            <summary>
+            Gets the cooldown data for an action.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Cooldown data.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.CustomComboCache.GetMaxCharges(System.UInt32)">
+            <summary>
+            Get the maximum number of charges for an action.
+            </summary>
+            <param name="actionID">Action ID to check.</param>
+            <returns>Max number of charges at current and max level.</returns>
+        </member>
+        <member name="T:XIVSlothComboPlugin.CustomComboPreset">
+            <summary>
+            Combo presets.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.IconReplacer">
+            <summary>
+            This class facilitates the icon replacing.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.IconReplacer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.IconReplacer"/> class.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.IconReplacer.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:XIVSlothComboPlugin.IconReplacer.OriginalHook(System.UInt32)">
+            <summary>
+            Calls the original hook.
+            </summary>
+            <param name="actionID">Action ID.</param>
+            <returns>The result from the hook.</returns>
+        </member>
+        <member name="T:XIVSlothComboPlugin.PluginAddressResolver">
+            <summary>
+            Plugin address resolver.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginAddressResolver.ComboTimer">
+            <summary>
+            Gets the address of the member ComboTimer.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginAddressResolver.LastComboMove">
+            <summary>
+            Gets the address of the member LastComboMove.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginAddressResolver.GetAdjustedActionId">
+            <summary>
+            Gets the address of fpGetAdjustedActionId.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginAddressResolver.IsActionIdReplaceable">
+            <summary>
+            Gets the address of fpIsIconReplacable.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginAddressResolver.Setup64Bit(Dalamud.Game.SigScanner)">
+            <inheritdoc/>
+        </member>
+        <member name="T:XIVSlothComboPlugin.PluginConfiguration">
+            <summary>
+            Plugin configuration.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.Version">
+            <summary>
+            Gets or sets the configuration version.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.EnabledActions">
+            <summary>
+            Gets or sets the collection of enabled combos.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.EnabledActions4">
+            <summary>
+            Gets or sets the collection of enabled combos.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.EnableSecretCombos">
+            <summary>
+            Gets or sets a value indicating whether to allow and display secret combos.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.HideConflictedCombos">
+            <summary>
+            Gets or sets a value indicating whether to hide combos which conflict with enabled presets.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.HideChildren">
+            <summary>
+            Gets or sets a value indicating whether to hide the children of a feature if it is disabled.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.PluginConfiguration.DancerDanceCompatActionIDs">
+            <summary>
+            Gets or sets an array of 4 ability IDs to interact with the <see cref="F:XIVSlothComboPlugin.CustomComboPreset.DancerDanceComboCompatibility"/> combo.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.Save">
+            <summary>
+            Save the configuration to disk.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.IsEnabled(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Gets a value indicating whether a preset is enabled.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>The boolean representation.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.IsSecret(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Gets a value indicating whether a preset is secret.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>The boolean representation.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.GetConflicts(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Gets an array of conflicting combo presets.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>The conflicting presets.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.GetParent(XIVSlothComboPlugin.CustomComboPreset)">
+            <summary>
+            Gets the parent combo preset if it exists, or null.
+            </summary>
+            <param name="preset">Preset to check.</param>
+            <returns>The parent preset.</returns>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.GetAllConflicts">
+            <summary>
+            Gets the full list of conflicted combos
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.PluginConfiguration.GetAllConflictOriginals">
+            <summary>
+            Get all the info from conflicted combos
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.Service">
+            <summary>
+            Dalamud and plugin services.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.Configuration">
+            <summary>
+            Gets or sets the plugin configuration.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.ComboCache">
+            <summary>
+            Gets or sets the plugin caching mechanism.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.IconReplacer">
+            <summary>
+            Gets or sets the plugin icon replacer.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.Address">
+            <summary>
+            Gets or sets the plugin address resolver.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.Interface">
+            <summary>
+            Gets the Dalamud plugin interface.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.BuddyList">
+            <summary>
+            Gets the Dalamud buddy list.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.ChatGui">
+            <summary>
+            Gets the Dalamud chat gui.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.ClientState">
+            <summary>
+            Gets the Dalamud client state.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.CommandManager">
+            <summary>
+            Gets the Dalamud command manager.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.Condition">
+            <summary>
+            Gets the Dalamud condition.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.DataManager">
+            <summary>
+            Gets the Dalamud data manager.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.Framework">
+            <summary>
+            Gets the Dalamud framework manager.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.JobGauges">
+            <summary>
+            Gets the Dalamud job gauges.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.ObjectTable">
+            <summary>
+            Gets the Dalamud object table.
+            </summary>
+        </member>
+        <member name="P:XIVSlothComboPlugin.Service.TargetManager">
+            <summary>
+            Gets the Dalamud target manager.
+            </summary>
+        </member>
+        <member name="T:XIVSlothComboPlugin.XIVComboExpandedPlugin">
+            <summary>
+            Main plugin implementation.
+            </summary>
+        </member>
+        <member name="M:XIVSlothComboPlugin.XIVComboExpandedPlugin.#ctor(Dalamud.Plugin.DalamudPluginInterface)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XIVSlothComboPlugin.XIVComboExpandedPlugin"/> class.
+            </summary>
+            <param name="pluginInterface">Dalamud plugin interface.</param>
+        </member>
+        <member name="P:XIVSlothComboPlugin.XIVComboExpandedPlugin.Name">
+            <inheritdoc/>
+        </member>
+        <member name="M:XIVSlothComboPlugin.XIVComboExpandedPlugin.Dispose">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

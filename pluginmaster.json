@@ -1,18 +1,18 @@
 [
     {
         "Author": "attick, daemitus, alymphocyte, Aki, Iaotle, Codemned, rushtothesun, damolitionn",
-        "Name": "XIVSlothCombo",
-        "Description": "XIVCombo But For Lazy Gamers, Should Have Everything That Original XIVCombo Has And More +++",
+        "Name": "ArraiseXIVSlothCombo",
+        "Description": "Custom XIVSlothCombo",
         "InternalName": "XIVSlothCombo",
         "AssemblyVersion": "1.0.0.0",
-        "RepoUrl": "https://github.com/Nik-Potokar/XIVSlothCombo",
+        "RepoUrl": "https://github.com/trevor1475/XIVSlothCombo",
         "ApplicableVersion": "any",
         "DalamudApiLevel": 4,
-        "DownloadLinkInstall": "https://github.com/Nik-Potokar/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
+        "DownloadLinkInstall": "https://github.com/trevor1475/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
         "IsHide": false,
         "IsTestingExclusive": false,
-        "DownloadLinkTesting": "https://github.com/Nik-Potokar/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
-        "DownloadLinkUpdate": "https://github.com/Nik-Potokar/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
+        "DownloadLinkTesting": "https://github.com/trevor1475/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
+        "DownloadLinkUpdate": "https://github.com/trevor1475/MyDalamudPlugins/raw/main/plugins/XIVSlothCombo/latest.zip",
         "DownloadCount": 0,
         "LastUpdated": "0"
     }

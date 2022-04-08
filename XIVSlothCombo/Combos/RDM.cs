@@ -1,5 +1,6 @@
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Types;
+using Dalamud.Logging;
 
 namespace XIVSlothComboPlugin.Combos
 {
@@ -652,6 +653,30 @@ namespace XIVSlothComboPlugin.Combos
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
 
         {
+            if (actionID is RDM.Verthunder3)
+            {
+                var inCombat = HasCondition(ConditionFlag.InCombat);
+
+                if (lastComboMove == RDM.Verthunder3)
+                {
+                    if (inCombat && HasEffect(RDM.Buffs.Dualcast) && !inOpener)
+                    {
+                        inOpener = true;
+                    }
+
+                    return RDM.Veraero3;
+                }
+
+                if (!inCombat && (inOpener || openerFinished))
+                {
+                    inOpener = false;
+                    openerFinished = false;
+                    step = 0;
+
+                    return RDM.Verthunder3;
+                }
+            }
+
             if (actionID is RDM.Jolt or RDM.Verstone or RDM.Verfire)
             {
                 const int
@@ -659,8 +684,6 @@ namespace XIVSlothComboPlugin.Combos
                 PROC_DELTA = 5,
                 FINISHER_DELTA = 11,
                 IMBALANCE_DIFF_MAX = 30;
-
-                var inCombat = HasCondition(ConditionFlag.InCombat);
 
                 bool verfireUp = HasEffect(RDM.Buffs.VerfireReady);
                 bool verstoneUp = HasEffect(RDM.Buffs.VerstoneReady);
@@ -674,26 +697,7 @@ namespace XIVSlothComboPlugin.Combos
 
                 if (IsEnabled(CustomComboPreset.SimpleRedMageOpener) && level >= 90)
                 {
-                    if (inCombat && lastComboMove == RDM.Verthunder3 && HasEffect(RDM.Buffs.Dualcast) && !inOpener)
-                    {
-                        inOpener = true;
-                    }
-
-                    if (!inOpener)
-                    {
-                        return RDM.Verthunder3;
-                    }
-
-                    if (!inCombat && (inOpener || openerFinished))
-                    {
-                        inOpener = false;
-                        openerFinished = false;
-                        step = 0;
-
-                        return RDM.Verthunder3;
-                    }
-
-                    if (inCombat && inOpener && !openerFinished)
+                    if (inOpener && !openerFinished)
                     {
                         //veraero
                         //swiftcast
@@ -742,8 +746,8 @@ namespace XIVSlothComboPlugin.Combos
 
                         if (step == 4)
                         {
-                            if (lastComboMove == RDM.Verthunder3) step++;
-                            else return RDM.Verthunder3;
+                            if (lastComboMove == RDM.Veraero3) step++;
+                            else return RDM.Veraero3;
                         }
 
                         if (step == 5)
@@ -854,7 +858,7 @@ namespace XIVSlothComboPlugin.Combos
                     return RDM.Engagement;
                 }
 
-                if ((lastComboMove == RDM.Riposte || lastComboMove == RDM.EnchantedRiposte) && gauge.WhiteMana >= 30 && gauge.BlackMana >= 30 )
+                if (gauge.ManaStacks < 3 && InMeleeRange(true) && (lastComboMove == RDM.Riposte || lastComboMove == RDM.EnchantedRiposte) && gauge.WhiteMana >= 30 && gauge.BlackMana >= 30 )
                 {
                     if (level >= RDM.Levels.Zwerchhau )
                     {
@@ -863,7 +867,7 @@ namespace XIVSlothComboPlugin.Combos
                 }
                     
 
-                if ((lastComboMove == RDM.Zwerchhau || lastComboMove == RDM.EnchantedRiposte) && gauge.WhiteMana >= 15 && gauge.BlackMana >= 15)
+                if (gauge.ManaStacks < 3 && InMeleeRange(true) && (lastComboMove == RDM.Zwerchhau || lastComboMove == RDM.EnchantedRiposte) && gauge.WhiteMana >= 15 && gauge.BlackMana >= 15)
                 {
                     if (level >= RDM.Levels.Redoublement)
                     {
@@ -872,7 +876,8 @@ namespace XIVSlothComboPlugin.Combos
                     else return RDM.EnchantedRiposte;
                 }
 
-                if (InMeleeRange(true)
+                if (gauge.ManaStacks < 3
+                    && InMeleeRange(true)
                     && gauge.WhiteMana >= 75 && gauge.BlackMana >= 75
                     && emboldenCD > 21 // Time taken for the melee combo + embolden setup time
                     && lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch && !HasEffect(RDM.Buffs.Dualcast))
@@ -886,7 +891,7 @@ namespace XIVSlothComboPlugin.Combos
                         return OriginalHook(RDM.Verthunder);
                 }
 
-                if (IsEnabled(CustomComboPreset.SimpleRedMageFishing) && inCombat && canWeave) 
+                if (IsEnabled(CustomComboPreset.SimpleRedMageFishing) && canWeave) 
                 {
                     if (!HasEffect(RDM.Buffs.VerfireReady) && !HasEffect(RDM.Buffs.VerstoneReady) && !HasEffect(RDM.Buffs.Dualcast) && gauge.ManaStacks != 3)
                     {
@@ -919,10 +924,6 @@ namespace XIVSlothComboPlugin.Combos
                         return OriginalHook(RDM.Veraero);
 
                     return actionID;
-                }
-
-                if (actionID is RDM.Verstone or RDM.Verfire)
-                {
                 }
 
                 bool fastCasting = HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.Swiftcast);
