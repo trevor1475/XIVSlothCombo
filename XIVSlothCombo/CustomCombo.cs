@@ -511,6 +511,15 @@ namespace XIVSlothComboPlugin.Combos
             return true;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether you are in melee range from the current target.
+        /// </summary>
+        /// <returns>Bool indicating whether you are in melee range.</returns>
+        protected static bool InCorpsRange(bool v)
+        {
+            return GetTargetDistance() < 1;
+        }
+
         // Grabs current target HP %, including teammates.
         protected static double EnemyHealthPercentage()
         {

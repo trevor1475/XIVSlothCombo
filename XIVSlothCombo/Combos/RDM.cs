@@ -54,7 +54,8 @@ namespace XIVSlothComboPlugin.Combos
                 VerstoneReady = 1235,
                 Dualcast = 1249,
                 Chainspell = 2560,
-                Acceleration = 1238;
+                Acceleration = 1238,
+                Embolden = 1239;
         }
 
         public static class Debuffs
@@ -145,18 +146,29 @@ namespace XIVSlothComboPlugin.Combos
             if (actionID == RDM.Redoublement || actionID == RDM.Riposte || actionID == RDM.Zwerchhau)
             {
                 var gauge = GetJobGauge<RDMGauge>();
-                var engagementCD = GetCooldown(RDM.Engagement);
+                var corpsCharges = GetRemainingCharges(RDM.Corpsacorps);
+                var engagementCharges = GetRemainingCharges(RDM.Engagement);
+                var emboldenCD = GetCooldownRemainingTime(RDM.Embolden);
                 var canWeave = CanWeave(OriginalHook(actionID));
 
-               if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) && canWeave && !HasEffect(RDM.Buffs.Dualcast) )
+                if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) && canWeave && !HasEffect(RDM.Buffs.Dualcast))
                 {
+                    if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication) && HasEffect(RDM.Buffs.Embolden))
+                        return RDM.Manafication;
                     if (level >= RDM.Levels.Fleche && IsOffCooldown(RDM.Fleche))
                         return RDM.Fleche;
                     if (level >= RDM.Levels.ContreSixte && IsOffCooldown(RDM.ContreSixte))
                         return RDM.ContreSixte;
                 }
 
-                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && engagementCD.CooldownRemaining < 35 && InMeleeRange(true))
+                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && corpsCharges >= 1 && corpsCharges >= engagementCharges &&
+                    InCorpsRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Corpsacorps) - 10))
+                {
+                    return RDM.Corpsacorps;
+                }
+
+                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && engagementCharges >= 1 && corpsCharges <= engagementCharges &&
+                    InMeleeRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Engagement) - 10))
                 {
                     return RDM.Engagement;
                 }
@@ -164,6 +176,12 @@ namespace XIVSlothComboPlugin.Combos
                 {
                     if (lastComboMove == RDM.EnchantedRedoublement)
                     {
+                        if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) && canWeave && !HasEffect(RDM.Buffs.Dualcast))
+                        {
+                            if (level >= RDM.Levels.Embolden && IsOffCooldown(RDM.Embolden))
+                                return RDM.Embolden;
+                        }
+
                         if (gauge.BlackMana >= gauge.WhiteMana && level >= RDM.Levels.Verholy)
                         {
                             if (HasEffect(RDM.Buffs.VerstoneReady) && !HasEffect(RDM.Buffs.VerfireReady) && (gauge.BlackMana - gauge.WhiteMana <= 9))
@@ -425,7 +443,6 @@ namespace XIVSlothComboPlugin.Combos
                 RDMGauge gauge = GetJobGauge<RDMGauge>();
                 int black = gauge.BlackMana;
                 int white = gauge.WhiteMana;
-                var engagementCD = GetCooldown(RDM.Engagement);
                 var canWeave = CanWeave(OriginalHook(actionID));
 
                 if (IsEnabled(CustomComboPreset.RedMageVerprocOpenerSmartCastFeature))
@@ -635,8 +652,7 @@ namespace XIVSlothComboPlugin.Combos
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
 
         {
-            if (actionID is RDM.Jolt or RDM.Veraero or RDM.Verthunder or RDM.Verstone 
-                or RDM.Verfire or RDM.Riposte or RDM.Zwerchhau or RDM.Redoublement)
+            if (actionID is RDM.Jolt or RDM.Verstone or RDM.Verfire)
             {
                 const int
                 LONG_DELTA = 6,
@@ -651,9 +667,10 @@ namespace XIVSlothComboPlugin.Combos
                 RDMGauge gauge = GetJobGauge<RDMGauge>();
                 int black = gauge.BlackMana;
                 int white = gauge.WhiteMana;
-                var engagementCD = GetCooldown(RDM.Engagement);
+                var corpsCharges = GetRemainingCharges(RDM.Corpsacorps);
+                var engagementCharges = GetRemainingCharges(RDM.Engagement);
+                var emboldenCD = GetCooldownRemainingTime(RDM.Embolden);
                 var canWeave = CanWeave(actionID);
-
 
                 if (IsEnabled(CustomComboPreset.SimpleRedMageOpener) && level >= 90)
                 {
@@ -773,13 +790,13 @@ namespace XIVSlothComboPlugin.Combos
 
                         if (step == 12)
                         {
-                            if (GetRemainingCharges(RDM.Corpsacorps) < 2) step++;
+                            if (corpsCharges < 2) step++;
                             else return RDM.Corpsacorps;
                         }
 
                         if (step == 13)
                         {
-                            if (GetRemainingCharges(RDM.Engagement) < 2) step++;
+                            if (engagementCharges < 2) step++;
                             else return RDM.Engagement;
                         }
 
@@ -791,13 +808,13 @@ namespace XIVSlothComboPlugin.Combos
 
                         if (step == 15)
                         {
-                            if (GetRemainingCharges(RDM.Corpsacorps) < 1) step++;
+                            if (corpsCharges < 1) step++;
                             else return RDM.Corpsacorps;
                         }
 
                         if (step == 16)
                         {
-                            if (GetRemainingCharges(RDM.Engagement) < 1) step++;
+                            if (engagementCharges < 1) step++;
                             else return RDM.Engagement;
                         }
 
@@ -825,8 +842,14 @@ namespace XIVSlothComboPlugin.Combos
                         return RDM.ContreSixte;
                 }
 
-                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && engagementCD.CooldownRemaining < 35 &&
-                    InMeleeRange(true) && level >= RDM.Levels.Engagement )
+                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && corpsCharges >= 1 && corpsCharges >= engagementCharges &&
+                    InCorpsRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Corpsacorps) - 10))
+                {
+                    return RDM.Corpsacorps;
+                }
+
+                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && engagementCharges >= 1 && corpsCharges <= engagementCharges &&
+                    InMeleeRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Engagement) - 10))
                 {
                     return RDM.Engagement;
                 }
@@ -848,10 +871,11 @@ namespace XIVSlothComboPlugin.Combos
                     }
                     else return RDM.EnchantedRiposte;
                 }
-                    
 
-                if (InMeleeRange(true) && gauge.WhiteMana >= 50 && gauge.BlackMana >= 50 &&  
-                    lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch && !HasEffect(RDM.Buffs.Dualcast))
+                if (InMeleeRange(true)
+                    && gauge.WhiteMana >= 75 && gauge.BlackMana >= 75
+                    && emboldenCD > 21 // Time taken for the melee combo + embolden setup time
+                    && lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch && !HasEffect(RDM.Buffs.Dualcast))
                 {
                     return RDM.EnchantedRiposte;
                 }
@@ -870,11 +894,11 @@ namespace XIVSlothComboPlugin.Combos
                         {
                             return RDM.Acceleration;
                         }
-                        if (!IsEnabled(CustomComboPreset.SimpleRedMageAccelOnlyFishing) && !HasEffect(RDM.Buffs.Swiftcast) &&
+                    }
+                    if (!IsEnabled(CustomComboPreset.SimpleRedMageAccelOnlyFishing) && !HasEffect(RDM.Buffs.Swiftcast) &&
                             IsOffCooldown(RDM.Swiftcast) && level >= RDM.Levels.Swiftcast)
-                        {
-                            return RDM.Swiftcast;
-                        }
+                    {
+                        return RDM.Swiftcast;
                     }
                 }
 

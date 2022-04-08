@@ -1,12 +1,12 @@
 {
-  "Author": "attick, Kami, Daemitus, Grammernatzi, Aki, Iaotle, Codemned, PrincessRTFM, damolitionn, ele-starshade, k-kz, Taurenkey, Augporto, grimgal",
-  "Name": "XIVSlothCombo",
-  "InternalName": "XIVSlothCombo",
+  "Author": "attick, Kami, Daemitus, Grammernatzi, Aki, Iaotle, Codemned, PrincessRTFM, damolitionn, ele-starshade, k-kz, Taurenkey, Augporto, grimgal, trevor1475",
+  "Name": "ArraiseXIVSlothCombo",
+  "InternalName": "ArraiseXIVSlothCombo",
   "DalamudApiLevel": 5,
-  "Punchline": "Condenses combos and mutually exclusive abilities onto a single button - and then some.",
-  "Description": "Condenses combos and mutually exclusive abilities onto a single button - and then some.",
-  "RepoUrl": "https://github.com/Nik-Potokar/XIVSlothCombo",
+  "Punchline": "Condenses combos and mutually exclusive abilities onto a single button - and then some. Arraise version.",
+  "Description": "Condenses combos and mutually exclusive abilities onto a single button - and then some. Arraise version.",
+  "RepoUrl": "https://github.com/trevor1475/XIVSlothCombo",
   "IconUrl": "https://i.imgur.com/UeRukF8.png",
   "ImageUrls": [ "https://i.imgur.com/UeRukF8.png" ],
-  "Changelog": "Updates and features/fixes for Core, AST, DNC, MCH and RDM. Please check the project's GitHub or Discord for a full changelog."
+  "Changelog": "Fork off of XIVSlothCombo to customize RDM and in the future MNK as well"
 }
