@@ -17,16 +17,42 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Ac
 		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs", "lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj", "{DE965DD3-7E84-4524-AE01-58E4E3626E62}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs.Generators", "lib\FFXIVClientStructs\FFXIVClientStructs.Generators\FFXIVClientStructs.Generators.csproj", "{F76E5F45-A0A9-47EA-A912-0546984DE4CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{619DF476-7225-4783-95A5-D29A8816EE66}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{619DF476-7225-4783-95A5-D29A8816EE66}.Debug|Any CPU.Build.0 = Debug|x64
 		{619DF476-7225-4783-95A5-D29A8816EE66}.Debug|x64.ActiveCfg = Debug|x64
 		{619DF476-7225-4783-95A5-D29A8816EE66}.Debug|x64.Build.0 = Debug|x64
+		{619DF476-7225-4783-95A5-D29A8816EE66}.Release|Any CPU.ActiveCfg = Release|x64
+		{619DF476-7225-4783-95A5-D29A8816EE66}.Release|Any CPU.Build.0 = Release|x64
 		{619DF476-7225-4783-95A5-D29A8816EE66}.Release|x64.ActiveCfg = Release|x64
 		{619DF476-7225-4783-95A5-D29A8816EE66}.Release|x64.Build.0 = Release|x64
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Debug|x64.Build.0 = Debug|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Release|x64.ActiveCfg = Release|Any CPU
+		{DE965DD3-7E84-4524-AE01-58E4E3626E62}.Release|x64.Build.0 = Release|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{F76E5F45-A0A9-47EA-A912-0546984DE4CA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
