@@ -374,7 +374,7 @@ namespace XIVSlothComboPlugin.Combos
             return actionID;
         }
     }
-    
+
     internal class GunbreakerReprisalProtection : CustomCombo
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GunbreakerReprisalProtection;
@@ -388,6 +388,10 @@ namespace XIVSlothComboPlugin.Combos
                     return GNB.LowBlow;
                 }
             }
+
+            return actionID;
+        }
+    }
 
     internal class GunbreakerCDsonNMFeature : CustomCombo
     {

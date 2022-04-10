@@ -152,51 +152,62 @@ namespace XIVSlothComboPlugin.Combos
                 var emboldenCD = GetCooldownRemainingTime(RDM.Embolden);
                 var canWeave = CanWeave(OriginalHook(actionID));
 
-                if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) && canWeave && !HasEffect(RDM.Buffs.Dualcast))
+                if (canWeave && !HasEffect(RDM.Buffs.Dualcast))
                 {
-                    if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication) && HasEffect(RDM.Buffs.Embolden))
-                        return RDM.Manafication;
-                    if (level >= RDM.Levels.Fleche && IsOffCooldown(RDM.Fleche))
-                        return RDM.Fleche;
-                    if (level >= RDM.Levels.ContreSixte && IsOffCooldown(RDM.ContreSixte))
-                        return RDM.ContreSixte;
-                }
-
-                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && corpsCharges >= 1 && corpsCharges >= engagementCharges &&
-                    InCorpsRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Corpsacorps) - 10))
-                {
-                    return RDM.Corpsacorps;
-                }
-
-                if (IsEnabled(CustomComboPreset.RedMageEngagementFeature) && canWeave && engagementCharges >= 1 && corpsCharges <= engagementCharges &&
-                    InMeleeRange(true) && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Engagement) - 10))
-                {
-                    return RDM.Engagement;
-                }
-                if (IsEnabled(CustomComboPreset.RedMageMeleeComboPlus))
-                {
-                    if (lastComboMove == RDM.EnchantedRedoublement)
+                    if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) )
                     {
-                        if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) && canWeave && !HasEffect(RDM.Buffs.Dualcast))
+                        if (lastComboMove == RDM.EnchantedRedoublement)
                         {
                             if (level >= RDM.Levels.Embolden && IsOffCooldown(RDM.Embolden))
                                 return RDM.Embolden;
+                            if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication))
+                                return RDM.Manafication;
                         }
 
-                        if (gauge.BlackMana >= gauge.WhiteMana && level >= RDM.Levels.Verholy)
+                        if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication)
+                            && gauge.ManaStacks >= 1 && (gauge.BlackMana < 15 || gauge.WhiteMana < 15))
                         {
-                            if (HasEffect(RDM.Buffs.VerstoneReady) && !HasEffect(RDM.Buffs.VerfireReady) && (gauge.BlackMana - gauge.WhiteMana <= 9))
-                                return RDM.Verflare;
-
-                            return RDM.Verholy;
+                            return RDM.Manafication;
                         }
-                        else if (level >= RDM.Levels.Verflare)
-                        {
-                            if (!HasEffect(RDM.Buffs.VerstoneReady) && HasEffect(RDM.Buffs.VerfireReady) && level >= RDM.Levels.Verholy && (gauge.WhiteMana - gauge.BlackMana <= 9))
-                                return RDM.Verholy;
+                        
+                        if (level >= RDM.Levels.Fleche && IsOffCooldown(RDM.Fleche))
+                            return RDM.Fleche;
+                        if (level >= RDM.Levels.ContreSixte && IsOffCooldown(RDM.ContreSixte))
+                            return RDM.ContreSixte;
+                    }
 
+                    if (IsEnabled(CustomComboPreset.RedMageEngagementFeature))
+                    {
+                        if (corpsCharges >= 1 && corpsCharges >= engagementCharges && InCorpsRange(true)
+                             && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Corpsacorps) - 10))
+                        {
+                            return RDM.Corpsacorps;
+                        }
+
+                        if (engagementCharges >= 1 && corpsCharges <= engagementCharges && InMeleeRange(true)
+                             && level >= RDM.Levels.Engagement && (emboldenCD > GetCooldownRemainingTime(RDM.Engagement) - 10))
+                        {
+                            return RDM.Engagement;
+                        }
+                    }
+                }
+                
+                if (IsEnabled(CustomComboPreset.RedMageMeleeComboPlus) && gauge.ManaStacks == 3)
+                {
+                    if (gauge.BlackMana >= gauge.WhiteMana && level >= RDM.Levels.Verholy)
+                    {
+                        if ((gauge.BlackMana - gauge.WhiteMana <= 9) && gauge.BlackMana <= 81 && HasEffect(RDM.Buffs.VerstoneReady) && !HasEffect(RDM.Buffs.VerfireReady))
                             return RDM.Verflare;
-                        }
+
+                        return RDM.Verholy;
+                    }
+                    else if (level >= RDM.Levels.Verflare)
+                    {
+                        if ((gauge.WhiteMana - gauge.BlackMana <= 9) && gauge.WhiteMana <= 81 && !HasEffect(RDM.Buffs.VerstoneReady) && HasEffect(RDM.Buffs.VerfireReady)
+                             && level >= RDM.Levels.Verholy)
+                            return RDM.Verholy;
+
+                        return RDM.Verflare;
                     }
                 }
 
@@ -877,10 +888,11 @@ namespace XIVSlothComboPlugin.Combos
                 }
 
                 if (gauge.ManaStacks < 3
+                    && !HasEffect(RDM.Buffs.Dualcast)
                     && InMeleeRange(true)
                     && gauge.WhiteMana >= 75 && gauge.BlackMana >= 75
                     && emboldenCD > 21 // Time taken for the melee combo + embolden setup time
-                    && lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch && !HasEffect(RDM.Buffs.Dualcast))
+                    && lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch or RDM.Resolution or RDM.Resolution)
                 {
                     return RDM.EnchantedRiposte;
                 }
