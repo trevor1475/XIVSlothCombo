@@ -72,5 +72,11 @@
 			<HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="SDL2-CS">
+      		<HintPath>$(DalamudLibPath)SDL2-CS.dll</HintPath>
+    	</Reference>
+    	<Reference Include="Serilog">
+      		<HintPath>$(DalamudLibPath)Serilog.dll</HintPath>
+    	</Reference>
 	</ItemGroup>
 </Project>

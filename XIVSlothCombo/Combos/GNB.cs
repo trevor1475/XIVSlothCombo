@@ -396,10 +396,6 @@ namespace XIVSlothComboPlugin.Combos
         }
     }
 
-            return actionID;
-        }
-    }
-
     internal class GunbreakerCDsonNMFeature : CustomCombo
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.GunbreakerCDsonNMFeature;
