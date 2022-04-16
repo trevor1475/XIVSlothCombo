@@ -1,5 +1,6 @@
 using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
+using Dalamud.Logging;
 
 namespace XIVSlothComboPlugin.Combos
 {
@@ -543,31 +544,32 @@ namespace XIVSlothComboPlugin.Combos
                 var pbStacks = FindEffectAny(MNK.Buffs.PerfectBalance);
                 var lunarNadi = gauge.Nadi == Nadi.LUNAR;
                 var nadiNONE = gauge.Nadi == Nadi.NONE;
+
                 if (!nadiNONE && !lunarNadi)
                 {
-                    if (pbStacks.StackCount == 3)
+                    if (pbStacks?.StackCount == 3)
                         return MNK.DragonKick;
-                    if (pbStacks.StackCount == 2)
+                    if (pbStacks?.StackCount == 2)
                         return MNK.Bootshine;
-                    if (pbStacks.StackCount == 1)
+                    if (pbStacks?.StackCount == 1)
                         return MNK.DragonKick;
                 }
                 if (nadiNONE)
                 {
-                    if (pbStacks.StackCount == 3)
+                    if (pbStacks?.StackCount == 3)
                         return MNK.DragonKick;
-                    if (pbStacks.StackCount == 2)
+                    if (pbStacks?.StackCount == 2)
                         return MNK.Bootshine;
-                    if (pbStacks.StackCount == 1)
+                    if (pbStacks?.StackCount == 1)
                         return MNK.DragonKick;
                 }
                 if (lunarNadi)
                 {
-                    if (pbStacks.StackCount == 3)
+                    if (pbStacks?.StackCount == 3)
                         return MNK.TwinSnakes;
-                    if (pbStacks.StackCount == 2)
+                    if (pbStacks?.StackCount == 2)
                         return MNK.DragonKick;
-                    if (pbStacks.StackCount == 1)
+                    if (pbStacks?.StackCount == 1)
                         return MNK.Demolish;
                 }
 

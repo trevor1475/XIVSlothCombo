@@ -56,7 +56,8 @@ namespace XIVSlothComboPlugin.Combos
                 Dualcast = 1249,
                 Chainspell = 2560,
                 Acceleration = 1238,
-                Embolden = 1239;
+                Embolden = 1239, 
+                Manafication = 1971;
         }
 
         public static class Debuffs
@@ -156,18 +157,20 @@ namespace XIVSlothComboPlugin.Combos
                 {
                     if (IsEnabled(CustomComboPreset.RedMageOgcdComboOnCombos) )
                     {
-                        if (lastComboMove == RDM.EnchantedRedoublement)
+                        if (level >= RDM.Levels.Embolden && IsOffCooldown(RDM.Embolden))
                         {
-                            if (level >= RDM.Levels.Embolden && IsOffCooldown(RDM.Embolden))
+                            if (lastComboMove == RDM.EnchantedRedoublement || HasEffect(RDM.Buffs.Manafication))
                                 return RDM.Embolden;
-                            if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication))
-                                return RDM.Manafication;
                         }
 
-                        if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication)
-                            && gauge.ManaStacks >= 1 && (gauge.BlackMana < 15 || gauge.WhiteMana < 15))
+
+                        if (level >= RDM.Levels.Manafication && IsOffCooldown(RDM.Manafication))
                         {
-                            return RDM.Manafication;
+                            if (lastComboMove == RDM.EnchantedRedoublement
+                                || (gauge.ManaStacks >= 1 && (gauge.BlackMana < 15 || gauge.WhiteMana < 15)))
+                            {
+                                return RDM.Manafication;
+                            }
                         }
                         
                         if (level >= RDM.Levels.Fleche && IsOffCooldown(RDM.Fleche))
@@ -892,8 +895,9 @@ namespace XIVSlothComboPlugin.Combos
                     && InMeleeRange(true)
                     && gauge.WhiteMana >= 75 && gauge.BlackMana >= 75
                     && emboldenCD > 21 // Time taken for the melee combo + embolden setup time
-                    && lastComboMove is not RDM.Verholy or RDM.Verflare or RDM.Scorch or RDM.Resolution or RDM.Resolution)
+                    && lastComboMove is not (RDM.Verholy or RDM.Verflare or RDM.Scorch or RDM.Resolution or RDM.Resolution))
                 {
+                    PluginLog.LogInformation("LastComboMove = " + lastComboMove);
                     return RDM.EnchantedRiposte;
                 }
                 
@@ -912,11 +916,23 @@ namespace XIVSlothComboPlugin.Combos
                             return RDM.Acceleration;
                         }
                     }
-                    if (!IsEnabled(CustomComboPreset.SimpleRedMageAccelOnlyFishing) && !HasEffect(RDM.Buffs.Swiftcast) &&
-                            IsOffCooldown(RDM.Swiftcast) && level >= RDM.Levels.Swiftcast)
+
+                    if (level >= RDM.Levels.Acceleration && !IsEnabled(CustomComboPreset.SimpleRedMageAccelOnlyFishing)
+                            && !HasEffect(RDM.Buffs.Acceleration) && GetRemainingCharges(RDM.Acceleration) == 2
+                            && !(HasEffect(RDM.Buffs.Swiftcast)
+                                    && lastComboMove is RDM.EnchantedRedoublement or RDM.Verholy or RDM.Verflare or RDM.Scorch or RDM.Resolution or RDM.Resolution))
+                    {
+                        return RDM.Acceleration;
+                    }
+
+                    if (level >= RDM.Levels.Swiftcast && !IsEnabled(CustomComboPreset.SimpleRedMageAccelOnlyFishing)
+                            && !HasEffect(RDM.Buffs.Swiftcast) && IsOffCooldown(RDM.Swiftcast)
+                            && !(HasEffect(RDM.Buffs.Acceleration) && lastComboMove == RDM.EnchantedRedoublement))
                     {
                         return RDM.Swiftcast;
                     }
+
+                    
                 }
 
                 if (actionID is RDM.Veraero or RDM.Verthunder)
