@@ -676,9 +676,8 @@ namespace XIVSlothComboPlugin.Combos
                     if (inCombat && HasEffect(RDM.Buffs.Dualcast) && !inOpener)
                     {
                         inOpener = true;
+                        return RDM.Veraero3;
                     }
-
-                    return RDM.Veraero3;
                 }
 
                 if (!inCombat && (inOpener || openerFinished))
@@ -897,7 +896,6 @@ namespace XIVSlothComboPlugin.Combos
                     && emboldenCD > 21 // Time taken for the melee combo + embolden setup time
                     && lastComboMove is not (RDM.Verholy or RDM.Verflare or RDM.Scorch or RDM.Resolution or RDM.Resolution))
                 {
-                    PluginLog.LogInformation("LastComboMove = " + lastComboMove);
                     return RDM.EnchantedRiposte;
                 }
                 
