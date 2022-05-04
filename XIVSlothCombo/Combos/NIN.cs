@@ -233,7 +233,7 @@ namespace XIVSlothComboPlugin.Combos
                     // 17s threshold for ranged since once back in melee you'll gcd first
                     if (ShouldSuiton(level, trickCD, trickCDThreshold: 17))
                         return SuitonCombo(level);
-                    if (level >= NIN.Levels.Jin && (HasEffect(NIN.Buffs.Mudra) || mudraCD.RemainingCharges == 2))
+                    if (level >= NIN.Levels.Jin && (HasEffect(NIN.Buffs.Kassatsu) || HasEffect(NIN.Buffs.Mudra) || mudraCD.RemainingCharges == 2 ))
                         return MudraCombo(level);
                     if (level >= NIN.Levels.PhantomKamaitachi && HasEffect(NIN.Buffs.PhantomReady))
                         return NIN.PhantomKamaitachi;
@@ -247,14 +247,14 @@ namespace XIVSlothComboPlugin.Combos
                 {
                     if (CanWeave(actionID) && !HasEffect(NIN.Buffs.Mudra))
                     {
-                        if (HasEffect(NIN.Buffs.Suiton) && !trickCD.IsCooldown)
-                            return NIN.TrickAttack;
-                        if (level >= 50 && !GetCooldown(NIN.Kassatsu).IsCooldown)
-                            return NIN.Kassatsu;
                         if (level >= 15 && gauge.Ninki <= 60 && !GetCooldown(NIN.Mug).IsCooldown)
                             return OriginalHook(NIN.Mug);
                         if (level >= NIN.Levels.Bunshin && gauge.Ninki >= 50 && !GetCooldown(NIN.Bunshin).IsCooldown)
                             return NIN.Bunshin;
+                        if (level >= 50 && !GetCooldown(NIN.Kassatsu).IsCooldown)
+                            return NIN.Kassatsu;
+                        if (HasEffect(NIN.Buffs.Suiton) && !trickCD.IsCooldown)
+                            return NIN.TrickAttack;
                         if (level >= 40 && !GetCooldown(OriginalHook(NIN.Assassinate)).IsCooldown && trickCD.IsCooldown)
                             return OriginalHook(NIN.Assassinate);
                         if (level >= 68 && ((gauge.Ninki >= 95 && !HasEffect(NIN.Buffs.TenChiJin) && GetCooldown(NIN.TenChiJin).IsCooldown) || (gauge.Ninki >= 50 /*&& HasEffect(NIN.Buffs.Meisui)*/)))
@@ -266,7 +266,7 @@ namespace XIVSlothComboPlugin.Combos
                         return NIN.Huraijin;
 
                     if (OriginalHook(NIN.Ninjutsu) is NIN.Rabbit)
-                        return OriginalHook(NIN.Ninjutsu);                    
+                        return OriginalHook(NIN.Ninjutsu);
 
                     if (ShouldSuiton(level, trickCD, trickCDThreshold))
                         return SuitonCombo(level);
@@ -275,8 +275,9 @@ namespace XIVSlothComboPlugin.Combos
                         return NIN.PhantomKamaitachi;
 
                     // Burn mudra if almost or at 2 charges or out of melee range
-                    if (level >= NIN.Levels.Jin &&
-                            (HasEffect(NIN.Buffs.Mudra) || mudraCD.RemainingCharges == 2) || (mudraCD.RemainingCharges == 1 && (!InMeleeRange(true) || mudraCD.ChargeCooldownRemaining < 4)))
+                    if (level >= NIN.Levels.Jin
+                        && (HasEffect(NIN.Buffs.Mudra) || HasEffect(NIN.Buffs.Kassatsu) || mudraCD.RemainingCharges == 2
+                                || (mudraCD.RemainingCharges == 1 && (!InMeleeRange(true) || mudraCD.ChargeCooldownRemaining < 4))))
                         return MudraCombo(level);
 
                     if (!InMeleeRange(true))
@@ -352,9 +353,10 @@ namespace XIVSlothComboPlugin.Combos
 
         private static bool ShouldSuiton(byte level, CooldownData trickCD, int trickCDThreshold)
         {
-            return (!trickCD.IsCooldown || trickCD.CooldownRemaining <= trickCDThreshold)
-                    && (!HasEffect(NIN.Buffs.Kassatsu) || (HasEffect(NIN.Buffs.Kassatsu) && IsEnabled(CustomComboPreset.NinSimpleTrickKassatsuFeature)))
-                    && level >= 45 && IsEnabled(CustomComboPreset.NinSimpleTrickFeature);
+            return level >= 45 && !HasEffect(NIN.Buffs.Suiton) && IsEnabled(CustomComboPreset.NinSimpleTrickFeature)
+                    && (HasCharges(NIN.Jin) || HasEffect(NIN.Buffs.Mudra))
+                    && (!trickCD.IsCooldown || trickCD.CooldownRemaining <= trickCDThreshold)
+                    && (!HasEffect(NIN.Buffs.Kassatsu) || (HasEffect(NIN.Buffs.Kassatsu) && IsEnabled(CustomComboPreset.NinSimpleTrickKassatsuFeature)));
         }
 
         private static uint SuitonCombo(byte level)
@@ -369,14 +371,9 @@ namespace XIVSlothComboPlugin.Combos
             if (level >= NIN.Levels.Jin && !HasEffect(NIN.Buffs.Suiton) && (OriginalHook(NIN.Ninjutsu) is NIN.Katon or NIN.GokaMekkyaku))
                 return OriginalHook(NIN.JinCombo);
 
-            if (OriginalHook(NIN.Ninjutsu) is NIN.Suiton && !HasEffect(NIN.Buffs.Suiton))
-                return OriginalHook(NIN.Ninjutsu);
-
-            PluginLog.Error("How did I get here NIN:SuitonCombo?");
             return OriginalHook(NIN.Ninjutsu);
         }
     }
-
 
     internal class SimpleNinjaAoE : CustomCombo
     {
